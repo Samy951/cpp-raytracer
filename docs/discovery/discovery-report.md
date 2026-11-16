@@ -147,7 +147,7 @@ These renderers are mature, and several support production standards such as USD
 
 ## What is ray tracing?
 
-[One paragraph, in your own words.]
+A ray tracer takes a description of a scene as input: the objects with their shapes and materials, the lights, and a camera. It produces an image, which is a grid of pixels. In between, it works backwards from the eye: for every pixel, it shoots a ray from the camera through that pixel and finds the closest object the ray hits. At that point it works out the colour, by checking whether something blocks the light, which gives a shadow, and, for shiny surfaces, by following a reflected ray further into the scene. Shooting more rays per pixel gives a smoother image but takes longer, which is the trade-off between the client's quick previews and its final render. Pixels do not depend on each other, so the frames of a film can be shared between the machines of the render farm.
 
 **Sources:** I started from [*Ray Tracing in One Weekend*](https://raytracing.github.io/books/RayTracingInOneWeekend.html) (Peter Shirley, Trevor David Black, Steve Hollasch). The reference I would come back to is [*Physically Based Rendering: From Theory to Implementation*, 4th edition](https://pbr-book.org/4ed/contents) (Matt Pharr, Wenzel Jakob, Greg Humphreys).
 
@@ -155,14 +155,20 @@ These renderers are mature, and several support production standards such as USD
 
 ### Programming paradigms
 
-[Your first understanding.]
+C++ supports several paradigms. It is procedural, like C, with free functions and plain structs. It is object-oriented, with classes, constructors and destructors, inheritance and virtual functions. It is generic: templates let one function or class work with many types, checked at compile time. It also has functional tools such as lambdas.
+
+Compared with TypeScript, which I use most, C++ is compiled to machine code, and its types are checked at compile time and still matter at run time, whereas TypeScript's types are erased once the code becomes JavaScript. In C++, objects are values by default: they are copied unless I pass a reference or a pointer, whereas in TypeScript every object is a shared reference. Compared with Go, which I know a little, C++ has inheritance and class hierarchies, where Go only has interfaces and composition, and C++ templates are far more powerful, and more complex, than Go's generics. Both TypeScript and Go free memory for me with a garbage collector; C++ does not.
 
 ### What to watch out for
 
-[Your first understanding.]
+- **Memory.** There is no garbage collector, unlike TypeScript and Go. Every object needs a clear owner. Values, `std::vector` and `std::unique_ptr` free memory automatically when their owner goes out of scope (RAII), so plain `new` and `delete` should be avoided.
+- **Undefined behaviour.** Reading past the end of an array gives `undefined` in TypeScript and a panic in Go. In C++ it is undefined behaviour: the program may crash, or carry on silently with wrong values. The same goes for an uninitialised local variable, which Go would set to zero. Silent wrong values are exactly the kind of unexplained defect the client complained about, so compiler warnings, sanitizers and tests matter.
+- **Dangling references.** A pointer or reference can outlive the object it points to, which TypeScript and Go never allow.
+- **The build.** Headers, compilation and linking are slower and more complex than `tsc` or `go build`. CMake describes the build so that every machine compiles the same way.
 
 ### Shaping the domain model
 
-[Your first understanding.]
+
+Each concept from the client's vocabulary becomes a type: `Vec3`, `Ray`, `Camera`, `Sphere`, `Plane`, `Material`, `Light`, `Scene` and `Image`. Small mathematical types such as `Vec3` and `Ray` should be plain values, cheap to copy, like Go structs. The shapes share an abstract base class with a virtual intersection method, which plays the role of an interface in TypeScript or Go, except that a C++ class must declare explicitly that it derives from it. Adding a shape then means adding a class, without changing the renderer, which answers the client's main need: extensibility. The core should also avoid global state and unseeded randomness, so that the same scene always gives the same image and each part can be tested on its own.
 
 **Sources:** I started from [Learn C++](https://www.learncpp.com/) and Bjarne Stroustrup's [C++ Style and Technique FAQ](https://www.stroustrup.com/bs_faq.html#Object-Oriented-language). The references I would come back to are the [C++ Core Guidelines](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines) (Bjarne Stroustrup, Herb Sutter), [cppreference.com](https://en.cppreference.com/cpp) and [*A Tour of C++*, 3rd edition](https://www.stroustrup.com/tour3.html) (Bjarne Stroustrup).
