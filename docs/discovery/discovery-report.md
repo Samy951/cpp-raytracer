@@ -6,47 +6,55 @@ A film studio needs a renderer it can extend and debug itself, because an unexpl
 
 ## Client interview summary
 
-The interview was a whole-class round robin. I did not record who asked each question or its exact wording, so questions are given by topic and answers are paraphrased from my notes. Words in quotation marks are the client's own.
+Interview held with the whole class on 16 November 2026. Quotes are taken from the shared class notes; [...] marks words left out.
 
 ### Extensibility
 
 **Need (non-functional):** The studio must be able to add its own features to the renderer. The client said this is the main need.
 
-> **Q (class):** About adding the studio's own features.
+> **Q (class):** "What is the main thing you need?"
 >
-> **A (paraphrased):** This is the main need. With Maya, a new feature takes six months to a year, or is refused.
+> **A:** "The ability to add our own features. With Maya [...] it takes 6 months or a year to add a feature."
 
 ### Diagnosing defects
 
 **Need (non-functional):** When an image has a defect, the team must find the cause within the same day.
 
-> **Q (class):** About problems with the current tools.
+> **Q (class):** "Walk me through the last time you rendered with your previous tool."
 >
-> **A (paraphrased):** Six months ago, black dots appeared in the images and rendering became twice as slow, and nobody knew why. The studio had to buy Maya licences and delivered three weeks late. When an image has a defect, they must find out why within the day.
+> **A:** "We kept finding black artifacts [...]. Nobody could tell us why. [...] We delivered 3 weeks late."
 
 ### Determinism
 
 **Need (non-functional):** The same input must always produce the same image.
 
-> **Q (class):** About how reliable the results must be.
+> **Q (class):** "What will show you that the software meets your needs?"
 >
-> **A (paraphrased):** The same input data must always give the same image.
+> **A:** "If I give it some inputs, I can always expect the same output. [...] If there is an anomaly in an image, we can work out within the same day why it happened."
 
 ### Preview and final render
 
 **Need (functional):** Designers need fast, small previews (about 10 per image), and the studio needs a high-quality final render.
 
-> **Q (class):** About how the renderer will be used.
+> **Q (class):** "How many creative renders do you do?"
 >
-> **A (paraphrased):** Designers need a quick, small preview, about 10 previews per image. The studio also needs a high-quality final render.
+> **A:** "At least 10 different pre-renders per image."
+
+> **Q (class):** "What is a reasonable render time for you?"
+>
+> **A:** "They need to get images really quickly."
 
 ### Rendering speed
 
 **Need (non-functional):** A 90-minute HD film must render in two months at most. For previews, the client gave no figure.
 
-> **Q (class):** About rendering time.
+> **Q (class):** "How long can final rendering take?"
 >
-> **A (paraphrased):** A 90-minute film in HD must render in two months at most. Previews must be fast, with no figure given.
+> **A:** "We don't want to spend more than 2 months on final rendering."
+
+> **Q (class):** "How long is the film?"
+>
+> **A:** "It is a 90-minute film" (HD, 24 fps in my notes).
 
 **My conclusion:** 90 min × 60 s × 24 frames/s = 129,600 frames. Two months ≈ 60 days × 24 h × 100 machines = 144,000 machine-hours. So one HD frame must render in about 67 minutes at most on one render-farm machine. This assumes 24 frames/s, machines running 24/7 and no re-renders.
 
@@ -54,33 +62,33 @@ The interview was a whole-class round robin. I did not record who asked each que
 
 **Need (functional):** The renderer reads a scene file and writes images. It has no user interface: it runs as a black box on the render farm.
 
-> **Q (class):** About how the renderer is run.
+> **Q (class):** "Do you need an interface, or is a file enough?"
 >
-> **A (paraphrased):** A scene file goes in and images come out. There is no interface: it is a black box launched on the render farm.
+> **A:** "A standard file is created and saved by another tool, [...] put onto the render farm. No interface at this point."
 
 ### Hardware
 
 **Need (constraint):** CPU only, no graphics card, on up to 100 machines.
 
-> **Q (class):** About the available hardware.
+> **Q (class):** "How big is the farm?"
 >
-> **A (paraphrased):** CPUs only, no graphics cards, on "up to 100" machines.
+> **A:** "We have up to 100 machines." The client also said: "We don't have graphics cards."
 
 ### Shapes
 
 **Need (functional):** Spheres and planes for now. The needs will change with each project.
 
-> **Q (class):** About which shapes the renderer must draw.
+> **Q (class):** "Which features do you need?"
 >
-> **A (paraphrased):** Spheres and planes for now. The needs will change with every project.
+> **A:** "For the moment, [...] spheres and planes."
 
 ### Maintainability
 
 **Need (non-functional):** The team must be able to maintain the renderer if its author leaves.
 
-> **Q (class):** About maintaining the software.
+> **Q (class):** "Is there anything we have missed?"
 >
-> **A (paraphrased):** The team must be able to maintain the software if its author leaves. Last time, nobody knew why some architecture choices had been made.
+> **A:** "What happens when the person who wrote the software leaves. [...] Nobody could tell me why [these choices] had been made."
 
 **My conclusion:** This is what architecture decision records (ADRs) are for: each choice is written down in the repository with its reasons.
 
@@ -96,9 +104,9 @@ The interview was a whole-class round robin. I did not record who asked each que
 
 **Need (functional):** Technical documentation for developers, and a guide for artists.
 
-> **Q (class):** About documentation.
+> **Q (class):** "What kind of documentation do you need?"
 >
-> **A (paraphrased):** Technical documentation for developers, and a guide for artists.
+> **A:** "Technical people will be reading it. [...] We expect some kind of user guide for the artists."
 
 ### Budget and delivery
 
@@ -106,12 +114,10 @@ The interview was a whole-class round robin. I did not record who asked each que
 
 > **Q (class):** About budget and deadline.
 >
-> **A (paraphrased):** Last year the studio paid more than $2M in licences, priced per machine. The maximum budget is 500,000, and delivery is on 5 January.
+> **A (paraphrased, except the quote):** Last year the studio paid more than $2M in licences, priced per machine. The budget is "no more than 500,000" euros, and delivery is on 5 January.
 
 ### Open questions
 
-- Number of machines: my notes say 1,000, but a classmate's transcript says "up to 100". With 1,000 machines, the budget per frame would be about 11 hours instead of 67 minutes.
-- Budget currency: euros or dollars?
 - "HD": I assume 1920×1080, but the client did not confirm it.
 - Preview speed: the client said "fast" with no figure. How long may one preview take?
 - Do the two months include the previews (about 10 per image) and any re-renders?
@@ -121,7 +127,7 @@ The interview was a whole-class round robin. I did not record who asked each que
 | Solution | Maker | Licence | Pricing (date checked) | Capabilities | Sources |
 |---|---|---|---|---|---|
 | Arnold | Autodesk | Commercial, subscription | $430/year for 1 user (annual plan), or $55/month (monthly plan). US site, USD (checked 2026-11-16) | CPU and GPU; Monte Carlo ray tracing; OSL; denoising; USD Hydra render delegate through the separate open-source arnold-usd project (Apache-2.0) | [Buy page](https://www.autodesk.com/products/arnold/buy), [Product details](https://www.autodesk.com/products/arnold/product-details), [arnold-usd](https://github.com/Autodesk/arnold-usd) |
-| RenderMan | Pixar | Commercial; a Non-Commercial licence is offered after registration | Commercial: **not published**, a quote form is used instead (checked 2026-11-16) | XPU (GPU-accelerated) and CPU; unidirectional and bidirectional path tracing; USD and OSL listed as supported standards; ML denoiser; Linux, macOS, Windows | [Tech specs](https://renderman.pixar.com/tech-specs), [Quote form](https://renderman.pixar.com/quote) |
+| RenderMan | Pixar | Commercial; a Non-Commercial licence is offered after registration | $595 per licence, plus $250 per licence for annual maintenance. USD (checked 2026-11-16) | XPU (GPU-accelerated) and CPU; unidirectional and bidirectional path tracing; USD and OSL listed as supported standards; ML denoiser; Linux, macOS, Windows | [Tech specs](https://renderman.pixar.com/tech-specs), [Store](https://renderman.pixar.com/store/) |
 | V-Ray | Chaos | Commercial, subscription | Annual billing, list prices: Solo €39.50/month, Premium €58.90/month, Collection €94.90/month. EUR, excluding taxes (checked 2026-11-16) | CPU, GPU or both; USD support and a Hydra delegate for Houdini Solaris; MaterialX; distributed rendering | [Pricing](https://www.chaos.com/pricing#vray), [V-Ray for Houdini](https://www.chaos.com/vray/houdini) |
 | Redshift | Maxon | Commercial, subscription | €24.90/month, €298.80 billed annually per licence. EUR, VAT included (checked 2026-11-16) | GPU-accelerated, biased renderer; up to 8 GPUs on one computer; native in Cinema 4D, plugins for Maya, 3ds Max, Houdini, Katana | [Plans and pricing](https://www.maxon.net/en/buy), [Redshift](https://www.maxon.net/en/redshift) |
 | Karma | SideFX (Houdini) | Commercial, bundled with Houdini | Extra Karma licence: $195 per 1-year rental. 5 Karma licences come with Houdini Core ($1,475) and Houdini FX ($3,505) 1-year rentals. USD (checked 2026-11-16) | Karma CPU and Karma XPU (GPU and CPU together); Hydra delegate in Solaris; MaterialX; bundled licences usable on a render farm | [Houdini store](https://www.sidefx.com/buy/), [Karma](https://www.sidefx.com/products/karma/) |
